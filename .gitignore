@@ -1,0 +1,8 @@
+# build
+dist/
+
+# node directories
+node_modules/
+
+# testing
+coverage/
