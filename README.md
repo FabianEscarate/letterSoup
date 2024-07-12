@@ -1,5 +1,4 @@
-
-# LetterSoup (Algorithm)
+# LetterSoup (Algorithm) (no Production now)
 
 Algorithm for make letterSoups (sopa de letras)
 
