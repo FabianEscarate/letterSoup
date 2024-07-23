@@ -1,4 +1,4 @@
-import { hasSpaceInPuzzle } from "./utils/puzzleUtils"
+import { generateMatrix, hasSpaceInPuzzle } from "./utils/puzzleUtils"
 
 type recieveListWordsType = string[]
 type resultGenerateType = {
@@ -22,8 +22,7 @@ const generate = (listWords: recieveListWordsType): resultGenerateType => {
   const listWordMapped = listWords.map(getLengthAndUpperWord)
   const maxLength = listWords.sort((a, b) => b.length - a.length)[0].length
   const dimension = (GapLetter + maxLength + GapLetter)
-  const letterSoupPuzzle: string[][] = [[]]
-  console.table(listWordMapped)
+  const letterSoupPuzzle: string[][] = generateMatrix(dimension)
 
   while (listWordMapped.length < 0) {
     const selectedWord = listWordMapped.pop()
