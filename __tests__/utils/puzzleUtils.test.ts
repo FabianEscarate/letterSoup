@@ -1,4 +1,4 @@
-import { generateMatrix, hasAnotherWords, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
+import { generateMatrix, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
 
 describe('letterSoup generator', () => {
 
@@ -21,20 +21,28 @@ describe('letterSoup generator', () => {
   ]
 
   test('should validate if word have space in the matrix', () => {
-    const randomIndex = Math.floor(Math.random() * wordsArray.length)
-    const randomWord = wordsArray[randomIndex]
-    const dimension = 17
+
+    const selectedWord = 'FLUIR'
+    const dimension = 5
     const randomCords: [number, number] = [
-      Math.floor(Math.random() * wordsArray.length),
-      Math.floor(Math.random() * wordsArray.length)
+      Math.floor(Math.random() * 5),
+      Math.floor(Math.random() * 5)
+    ]
+    const matrixStub: string[][] = [
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' '],
+      ['f', 'l', 'u', 'i', 'r'],
+      [' ', ' ', ' ', ' ', ' '],
+      [' ', ' ', ' ', ' ', ' ']
     ]
 
-    const hasSpace = hasSpaceInPuzzle(dimension, randomCords, randomWord.length)
+    const hasSpace = hasSpaceInPuzzle(dimension, randomCords, selectedWord.length, matrixStub)
 
     console.log({
-      word: randomWord,
-      wordLength: randomWord.length,
+      word: selectedWord,
+      wordLength: selectedWord.length,
       dimension,
+      matrixStub,
       randomCords,
       hasSpace
     })
@@ -42,39 +50,10 @@ describe('letterSoup generator', () => {
     expect(hasSpace).toBeDefined()
   })
 
-  test('should validate if word has another word colisionaned', () => {
-    const selectedWord = 'words'
-    const randomCords: [number, number] = [
-      Math.floor(Math.random() * 5),
-      Math.floor(Math.random() * 5)
-    ]
-
-    const matrixStub: string[][] = [
-      ['', '', '', '', ''],
-      ['', '', '', '', ''],
-      ['f', 'l', 'u', 'i', 'r'],
-      ['', '', '', '', ''],
-      ['', '', '', '', '']
-    ]
-
-    const hasAnotherWordsResult = hasAnotherWords(matrixStub, randomCords, 5)
-
-    console.log({
-      word: selectedWord,
-      wordLength: selectedWord.length,
-      matrixStub,
-      randomCords,
-      hasAnotherWordsResult
-    })
-
-    expect(hasAnotherWordsResult).toBeDefined()
-  })
-
   test('should return a matrix with specific dimension', () => {
     const expectDimension = 5
 
     const matrix = generateMatrix(expectDimension)
-    console.table(matrix)
     expect(matrix.length).toBe(5)
     expect(matrix[3].length).toBe(5)
   })
