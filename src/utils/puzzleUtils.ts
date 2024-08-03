@@ -5,6 +5,10 @@ type hasSpaceInPuzzleResult = {
   hasSpaceVertically: boolean,
   hasSpaceDiagonally: boolean
 }
+type dimensionPuzzleType = {
+  rows: number,
+  columns: number
+}
 export type orientationType = "horizontally" | "vertically" | "diagonally" | false
 
 const generateMatrix = (dimension: number): puzzleType => {
@@ -28,7 +32,42 @@ const getCordsByMatrix = (matrix: string[][]) => {
   return result
 }
 
-const hasAnotherLetters = (space:string) => !/[A-Z]|Á|É|Í|Ó|Ú/i.test(space)
+const getDimensionFromMatrix = (matrix: string[][]): dimensionPuzzleType => {
+  return {
+    rows: matrix.length,
+    columns: matrix[0].length
+  }
+}
+
+const getDiagonalLineByCords = (dimension: dimensionPuzzleType, matrix: string[][], cords: [number, number]) => {
+  const { rows, columns } = dimension
+  const [cordX, cordY] = cords
+  const mainDiagonal = [];
+
+  for (let i = Math.max(0, cordX - cordY); i < Math.min(rows, rows + cordX - cordY); i++) {
+    const j = i - (cordX - cordY);
+    if (0 <= j && j < columns) {
+      mainDiagonal.push(matrix[i][j]);
+    }
+  }
+
+  return mainDiagonal.join('')
+}
+
+const getAntiDiagonalLineByCords = (dimension: dimensionPuzzleType, matrix: string[][], cords: [number, number]) => {
+  const { rows, columns } = dimension
+  const [cordX, cordY] = cords
+  const antiDiagonal = [];
+
+  for (let i = Math.max(0, cordX + cordY - columns + 1); i < Math.min(rows, cordX + cordY + 1); i++) {
+    const j = cordX + cordY - i;
+    if (0 <= j && j < columns) {
+      antiDiagonal.push(matrix[i][j]);
+    }
+  }
+
+  return antiDiagonal.reverse().join('')
+}
 
 const hasSpaceInPuzzle = (dimensionMatrix: number, currentPosition: [number, number], lengthOfWord: number, matrix: string[][]): hasSpaceInPuzzleResult => {
   const [cordX, cordY] = currentPosition
@@ -42,7 +81,7 @@ const hasSpaceInPuzzle = (dimensionMatrix: number, currentPosition: [number, num
 
   const hasSpaceHorizontally = diffHorizontally >= lengthOfWord && hasAnotherLetters(puzzleRow)
   const hasSpaceVertically = diffVertically >= lengthOfWord && hasAnotherLetters(puzzleColumn)
-  const hasSpaceDiagonally = hasSpaceHorizontally && hasSpaceVertically && hasAnotherLetters(puzzleDiagonal)
+  const hasSpaceDiagonally = puzzleDiagonal.length >= lengthOfWord && hasAnotherLetters(puzzleDiagonal)
 
   return {
     hasSpaceHorizontally,
@@ -50,6 +89,25 @@ const hasSpaceInPuzzle = (dimensionMatrix: number, currentPosition: [number, num
     hasSpaceDiagonally
   }
 }
+
+const getLinesByCords = (cords: [number, number], puzzleMatrix: string[][]) => {
+  const [cordX, cordY] = cords
+  const dimension = getDimensionFromMatrix(puzzleMatrix)
+
+  const horizontallyLine = Array(...Array(dimension.columns).keys()).map(columnIndex => puzzleMatrix[cordX][columnIndex]).join('')
+  const vertinallyLine = Array(...Array(dimension.rows).keys()).map(rownIndex => puzzleMatrix[rownIndex][cordY]).join('')
+  const diagonallyDownLine = getDiagonalLineByCords(dimension, puzzleMatrix, cords)
+  const diagonallyUpLine = getAntiDiagonalLineByCords(dimension, puzzleMatrix, cords)
+
+  return {
+    horizontallyLine,
+    vertinallyLine,
+    diagonallyDownLine,
+    diagonallyUpLine
+  }
+}
+
+
 
 const putWordHorizontally = (word: string, currentPosition: [number, number], matrix: string[][]) => {
   const wordToArray = Array.from(word)
@@ -93,5 +151,7 @@ export {
   hasSpaceInPuzzle,
   generateMatrix,
   getCordsByMatrix,
+  getLinesByCords,
+  splitsGroupOfSpacesAndLetter,
   putWord
 }

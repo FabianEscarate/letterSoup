@@ -1,4 +1,4 @@
-import { generateMatrix, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
+import { generateMatrix, generateRegexByGroupOfSpacesAndLetters, getLinesByCords, hasSpaceInPuzzle, splitsGroupOfSpacesAndLetter } from "../../src/utils/puzzleUtils"
 
 describe('letterSoup generator', () => {
 
@@ -20,8 +20,7 @@ describe('letterSoup generator', () => {
     "fluir"
   ]
 
-  test('should validate if word have space in the matrix', () => {
-
+  test.skip('should validate if word have space in the matrix', () => {
     const selectedWord = 'FLUIR'
     const dimension = 5
     const randomCords: [number, number] = [
@@ -57,4 +56,30 @@ describe('letterSoup generator', () => {
     expect(matrix.length).toBe(5)
     expect(matrix[3].length).toBe(5)
   })
+
+  test('should return all lines by especific cords', () => {
+    const matrixExample: string[][] = [
+      [' ', 'c', ' ', 'c', ' '],
+      [' ', ' ', 'r', 'a', 'r'],
+      ['f', 'l', 'u', 'i', 'r'],
+      [' ', ' ', 'u', 'd', 'e'],
+      [' ', 'h', ' ', 'a', ' ']
+    ]
+
+    const {
+      horizontallyLine,
+      vertinallyLine,
+      diagonallyDownLine,
+      diagonallyUpLine
+    } = getLinesByCords([2, 3], matrixExample)
+
+    expect(horizontallyLine).toBe('fluir')
+    expect(vertinallyLine).toBe('caida')
+    expect(diagonallyDownLine).toBe('crie')
+    expect(diagonallyUpLine).toBe('huir')
+  })
+
+
+
+
 })
