@@ -3,6 +3,7 @@ import {
   generateRegexByGroupOfSpacesAndLetters, 
   isWhiteSpace,
   splitsGroupOfSpacesAndLetter,
+  chunkListCharactersByCriterial,
   joinRegexStringWithPipe
 } from "../../src/utils/regex";
 
@@ -56,12 +57,24 @@ describe('Regex Suite', () => {
     ).toBe(expectedStringRegex)
   })
 
+  test('should return chunked array', () => {
+    const groupToGenerate = ['       ', 'i', '    ', 'a', '    '] as RegExpMatchArray
+    const secondGroupToGenerate = ['s','      ', 'i', '    ', 'a', '   ', 'e'] as RegExpMatchArray
+
+    const chunkedArray = chunkListCharactersByCriterial(groupToGenerate)
+    const secondChunkedArray = chunkListCharactersByCriterial(secondGroupToGenerate)
+
+    expect(chunkedArray.length).toBe(2)
+    expect(secondChunkedArray.length).toBe(4)
+
+  })
+
   test('should return regex expresion from expecific group of spaces and letters', () => {
     const groupGenerate = ['       ', 'i', '    ', 'a', '    '] as RegExpMatchArray
-
+    const regexExpected = '/(^.{1,7}i.{4}a.{1,4}$)|(^.{1,7}i.{1,4}$)|(^.{1,4}a.{1,4}$)/gm'
     const regexExpresionResult = generateRegexByGroupOfSpacesAndLetters(groupGenerate)
 
-    expect(regexExpresionResult).toBe(/(^.{1,7}i.{4}a.{1,4}$)|(^.{1,7}i.{1,4}$)|(^.{1,4}a.{1,4}$)/gm)
+    expect(regexExpresionResult.toString()).toBe(regexExpected)
   })
 
 
