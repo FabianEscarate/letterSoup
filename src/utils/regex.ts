@@ -1,8 +1,8 @@
 
 const hasAnotherLetters = (space: string) => /[A-Z]|Á|É|Í|Ó|Ú|Ñ/i.test(space)
 const isWhiteSpace = (groupToText: string) => /\s+/.test(groupToText)
-const splitsGroupOfSpacesAndLetter = (line: string): RegExpMatchArray | null => {
-  return line.match(/\s+|\S+/g)
+const splitsGroupOfSpacesAndLetter = (line: string): RegExpMatchArray => {
+  return line.match(/\s+|\S+/g) as RegExpMatchArray
 }
 const isFirstGroup = (index: number) => index === 0
 const isLastGroup = (index: number, lengthGroup: number) =>

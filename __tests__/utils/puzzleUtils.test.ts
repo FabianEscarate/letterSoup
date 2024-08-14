@@ -1,53 +1,6 @@
-import { generateMatrix, generateRegexByGroupOfSpacesAndLetters, getLinesByCords, hasSpaceInPuzzle, splitsGroupOfSpacesAndLetter } from "../../src/utils/puzzleUtils"
+import { generateMatrix, getLinesByCords, getRegexByLines, getWordsByRegexLines, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
 
 describe('letterSoup generator', () => {
-
-  const wordsArray = [
-    "recrimación",
-    "descompuestos",
-    "containerizzato",
-    "curaciones",
-    "decorada",
-    "chimeneas",
-    "Firetraps",
-    "molinos",
-    "alfarero",
-    "encantador",
-    "tecnócrata",
-    "poliedros",
-    "adivinanzas",
-    "imparcialidad",
-    "fluir"
-  ]
-
-  test.skip('should validate if word have space in the matrix', () => {
-    const selectedWord = 'FLUIR'
-    const dimension = 5
-    const randomCords: [number, number] = [
-      Math.floor(Math.random() * 5),
-      Math.floor(Math.random() * 5)
-    ]
-    const matrixStub: string[][] = [
-      [' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' '],
-      ['f', 'l', 'u', 'i', 'r'],
-      [' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ']
-    ]
-
-    const hasSpace = hasSpaceInPuzzle(dimension, randomCords, selectedWord.length, matrixStub)
-
-    console.log({
-      word: selectedWord,
-      wordLength: selectedWord.length,
-      dimension,
-      matrixStub,
-      randomCords,
-      hasSpace
-    })
-
-    expect(hasSpace).toBeDefined()
-  })
 
   test('should return a matrix with specific dimension', () => {
     const expectDimension = 5
@@ -79,7 +32,75 @@ describe('letterSoup generator', () => {
     expect(diagonallyUpLine).toBe('huir')
   })
 
+  test('should return regular expresion for every line', () => {
+    // getLinesCords (2,1)
+    // [' ', 'V', ' ', 'Z', ' '],
+    // [' ', ' ', ' ', ' ', ' '],
+    // ['F', ' ', ' ', ' ', ' '],
+    // [' ', ' ', 'I', ' ', ' '],
+    // [' ', ' ', ' ', ' ', ' ']
 
 
+    const {
+      regexHorizontallyLine,
+      regexVertinallyLine,
+      regexDiagonallyDownLine,
+      regexDiagonallyUpLine
+    } = getRegexByLines({
+      horizontallyLine: 'F    ',
+      vertinallyLine: 'V    ',
+      diagonallyDownLine: '  I ',
+      diagonallyUpLine: '   Z'
+    })
+
+    expect(regexHorizontallyLine.toString()).toBe('/(^F.{1,4}$)|(^F.{1,4}$)/gm')
+    expect(regexVertinallyLine.toString()).toBe('/(^V.{1,4}$)|(^V.{1,4}$)/gm')
+    expect(regexDiagonallyDownLine.toString()).toBe('/(^.{1,2}I.{1,1}$)|(^.{1,2}I.{1,1}$)/gm')
+    expect(regexDiagonallyUpLine.toString()).toBe('/(^.{1,3}Z$)|(^.{1,3}Z$)/gm')
+  })
+
+  test('should return list of words was matched by regex definition', () => {
+    // getLinesCords (2,1)
+    // [' ', 'V', ' ', 'X', ' '],
+    // [' ', ' ', ' ', ' ', ' '],
+    // ['F', ' ', ' ', ' ', ' '],
+    // [' ', ' ', 'I', ' ', ' '],
+    // [' ', ' ', ' ', ' ', ' ']
+
+    const listofWords = [
+      "PASTO",
+      "FALTA",
+      "SIBYL",
+      "LOURS",
+      "TRIPA",
+      "ALTAS",
+      "CISNE",
+      "WHID",
+      "CALX",
+      "GOER",
+      "RATA",
+      "OLOR",
+      "CHIR",
+      "ALAS",
+    ]
+
+    const {
+      matchRegexHorizontallyLine,
+      matchRegexVertinallyLine,
+      matchRegexDiagonallyDownLine,
+      matchRegexDiagonallyUpLine
+    } = getWordsByRegexLines({
+      regexHorizontallyLine: /(^F.{1,4}$)|(^F.{1,4}$)/gm,
+      regexVertinallyLine: /(^V.{1,4}$)|(^V.{1,4}$)/gm,
+      regexDiagonallyDownLine: /(^.{1,2}I.{1,1}$)|(^.{1,2}I.{1,1}$)/gm,
+      regexDiagonallyUpLine: /(^.{1,3}Z$)|(^.{1,3}X$)/gm
+    }, listofWords)
+
+    expect(matchRegexHorizontallyLine).toEqual(["FALTA"])
+    expect(matchRegexVertinallyLine).toEqual([])
+    expect(matchRegexDiagonallyDownLine).toEqual(["WHID", "CHIR"])
+    expect(matchRegexDiagonallyUpLine).toEqual(["CALX"])
+
+  })
 
 })

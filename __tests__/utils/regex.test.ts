@@ -77,6 +77,4 @@ describe('Regex Suite', () => {
     expect(regexExpresionResult.toString()).toBe(regexExpected)
   })
 
-
-
 })

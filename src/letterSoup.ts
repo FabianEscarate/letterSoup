@@ -1,4 +1,4 @@
-import { generateMatrix, getCordsByMatrix, hasSpaceInPuzzle, orientationType, putWord } from "./utils/puzzleUtils"
+import { generateMatrix, getCordsByMatrix, hasSpaceInPuzzle, orientationType, putWord, scrambleCordsOfMatrix } from "./utils/puzzleUtils"
 
 type recieveListWordsType = string[]
 type resultGenerateType = {
@@ -17,36 +17,28 @@ const getLengthAndUpperWord = (word: string): mapWord => ({
   lengthWord: word.length
 })
 
-const randomCords = (matrixDimension: number): [number, number] => {
-  return [
-    Math.floor(Math.random() * matrixDimension),
-    Math.floor(Math.random() * matrixDimension)
-  ]
-}
-
 const generate = (listWords: recieveListWordsType): resultGenerateType => {
   const listWordMapped = listWords.map(getLengthAndUpperWord)
   const maxLength = Math.max(...listWords.map(word => word.length))
   const dimension = (GapLetter + maxLength + GapLetter)
   const letterSoupPuzzle: string[][] = generateMatrix(dimension)
-  const cordsPuzzle = getCordsByMatrix(letterSoupPuzzle)
+  const cordsPuzzle = scrambleCordsOfMatrix(getCordsByMatrix(letterSoupPuzzle))
 
   for (const selectedWord of listWordMapped) {
     if (!selectedWord)
-      throw 'no more words';
+      throw 'No more words'
 
-    let [x, y] = [0, 0]
-    while ([x, y] = randomCords(dimension)) {
+    for (const [x, y] of cordsPuzzle) {
       const orientationPosibility = hasSpaceInPuzzle(dimension, [x, y], selectedWord.lengthWord, letterSoupPuzzle)
       const orientation: orientationType =
         orientationPosibility.hasSpaceDiagonally ?
           "diagonally" : orientationPosibility.hasSpaceVertically ?
             "vertically" : orientationPosibility.hasSpaceHorizontally ? "horizontally" : false
 
+
+
       if (orientation) {
         putWord(selectedWord.upperWord, letterSoupPuzzle, [x, y], orientation)
-        console.table(letterSoupPuzzle)
-        // console.log({selectedWord, cords:[x,y], orientation, letterSoupPuzzle})
         break
       }
     }
