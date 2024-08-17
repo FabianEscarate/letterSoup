@@ -1,4 +1,4 @@
-import { generateMatrix, getLinesByCords, getRegexByLines, getWordsByRegexLines, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
+import { checkIntersections, generateMatrix, getIntersections, getLinesByCords, getRegexByLines, getWordsByRegexLines, hasSpaceInPuzzle } from "../../src/utils/puzzleUtils"
 
 describe('letterSoup generator', () => {
 
@@ -103,4 +103,28 @@ describe('letterSoup generator', () => {
 
   })
 
+  test('should return list of intersections for be evaluated', () => {
+    const word = "ALFARERO"
+    const testLine = 'RER  I  A    R   '
+
+    const intersections = getIntersections(Array.from(word), testLine)
+
+    expect(intersections).toHaveLength(9)
+  })
+
+  test('should return the correct intersection for the word to line', () => {
+    const intersections = [
+      { wordIndex: 1, lineIndex: 16 }, // false -> fuera de rango line
+      { wordIndex: 2, lineIndex: 2 }, // true -
+      { wordIndex: 4, lineIndex: 16 }, // false -> fuera de rango line
+      { wordIndex: 9, lineIndex: 11 } // false -> altera una palabra
+    ]
+    const word = "ENCANTADOR"
+    const testLine = '  C        R U  N'
+    const intersectionExpected = { wordIndex: 2, lineIndex: 2 }
+
+    const correctIntersection = checkIntersections(intersections, word, testLine)
+
+    expect(correctIntersection).toEqual(intersectionExpected)
+  })
 })

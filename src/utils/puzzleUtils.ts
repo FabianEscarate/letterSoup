@@ -13,6 +13,20 @@ type dimensionPuzzleType = {
 }
 export type orientationType = "horizontally" | "vertically" | "diagonally" | "antidiagonally" | false
 
+export enum Line {
+  horizontally = "horizontallyLine",
+  vertically = "vertinallyLine",
+  diagonally = "diagonallyDownLine",
+  antidiagonally = "diagonallyUpLine"
+}
+
+export enum Match {
+  horizontally = "matchRegexHorizontallyLine",
+  vertically = "matchRegexVertinallyLine",
+  diagonally = "matchRegexDiagonallyDownLine",
+  antidiagonally = "matchRegexDiagonallyUpLine"
+}
+
 type linesByCordsType = {
   horizontallyLine: string;
   vertinallyLine: string;
@@ -31,6 +45,13 @@ type wordListByLine<Type> = {
 }
 
 type wordListByLineType = wordListByLine<regexValueByLineType>
+
+type interectionType = {
+  wordIndex: number,
+  lineIndex: number
+}
+
+type interectionsType = interectionType[]
 
 const generateMatrix = (dimension: number): puzzleType => {
   const matrix: puzzleType = Array(...Array(dimension * dimension)).reduce((resultValue, currentValue, index, array) => {
@@ -159,40 +180,101 @@ const getWordsByRegexLines = (regexLines: regexValueByLineType, wordList: string
   }, {} as wordListByLineType)
 }
 
-const putWordHorizontally = (word: string, currentPosition: [number, number], matrix: string[][]) => {
-  const wordToArray = Array.from(word)
-  const [X, Y] = currentPosition
-  wordToArray.forEach((letter: string, index: number) => {
-    matrix[X][Y + index] = letter
+const getIntersections = (word: string[], line: string): interectionsType => {
+  const listOfIntersections = [] as interectionsType
+  word.forEach((wordLetter, wordIndex) => {
+    Array.from(line).forEach((lineLetter, lineIndex) => {
+      if (wordLetter === lineLetter)
+        listOfIntersections.push({
+          lineIndex,
+          wordIndex
+        })
+    })
   })
+
+  return listOfIntersections
 }
 
-const putWordVertically = (word: string, currentPosition: [number, number], matrix: string[][]) => {
-  const wordToArray = Array.from(word)
-  const [X, Y] = currentPosition
-  wordToArray.forEach((letter: string, index: number) => {
-    matrix[X + index][Y] = letter
-  })
+const checkIntersections = (intersections: interectionsType, word: string, line: string) => {
+
+  if (intersections.length === 1)
+    return intersections[0]
+  if (intersections.length > 1) {
+    console.warn('have more of one intersection')
+    const lengthLine = line.length
+    const lengthWord = word.length
+
+    return intersections.filter(intersection => {
+      const diffIntersection = (intersection.lineIndex - intersection.wordIndex)
+
+      if ((diffIntersection + lengthWord) > lengthLine || diffIntersection < 0) {
+        return false
+      }
+      const subStrLine = line.substring(diffIntersection, (diffIntersection + lengthWord))
+      const regex = generateRegexByGroupOfSpacesAndLetters(splitsGroupOfSpacesAndLetter(subStrLine))
+      if (!regex.test(word)) {
+        return false
+      }
+      return true
+    })[0]
+  }
 }
 
-const putWordDiagonally = (word: string, currentPosition: [number, number], matrix: string[][]) => {
-  const wordToArray = Array.from(word)
+const putWordHorizontally = (word: string, currentPosition: [number, number], matrix: string[][], padStart: number = 0) => {
+  const { rows, columns } = getDimensionFromMatrix(matrix)
+
   const [X, Y] = currentPosition
-  wordToArray.forEach((letter: string, index: number) => {
-    matrix[X + index][Y + index] = letter
-  })
+  let wordIndex = 0
+  for (let horizontalIndex = 0; horizontalIndex < columns; horizontalIndex++) {
+    if (horizontalIndex >= padStart) {
+      matrix[X][horizontalIndex] = wordIndex < word.length ? word.charAt(wordIndex) : matrix[X][horizontalIndex]
+      wordIndex++
+    }
+  }
 }
 
-const putWord = (word: string, matrix: string[][], currentPosition: [number, number], orientation: orientationType) => {
+const putWordVertically = (word: string, currentPosition: [number, number], matrix: string[][], padStart: number = 0) => {
+  const { rows, columns } = getDimensionFromMatrix(matrix)
+
+  const [X, Y] = currentPosition
+  let wordIndex = 0
+  for (let verticalIndex = 0; verticalIndex < rows; verticalIndex++) {
+    if (verticalIndex >= padStart) {
+      matrix[verticalIndex][Y] = wordIndex < word.length ? word.charAt(wordIndex) : matrix[verticalIndex][Y]
+      wordIndex++
+    }
+  }
+}
+
+const putWordDiagonally = (word: string, currentPosition: [number, number], matrix: string[][], padStart?: number) => {
+  const { rows, columns } = getDimensionFromMatrix(matrix)
+  const [X, Y] = currentPosition
+
+  let wordIndex = 0
+  let spaceToStart = padStart ?? 0
+  for (let i = Math.max(0, X - Y); i < Math.min(rows, rows + X - Y); i++) {
+    const j = i - (X - Y);
+    if (0 <= j && j < columns) {
+      if (spaceToStart > 0) {
+        spaceToStart--
+        continue
+      }
+      matrix[i][j] = wordIndex < word.length ? word.charAt(wordIndex) : matrix[i][j]
+      wordIndex++
+    }
+  }
+}
+
+const putWord = (word: string, matrix: string[][], currentPosition: [number, number], orientation: orientationType, padStart: number = 0) => {
   switch (orientation) {
     case "diagonally":
-      putWordDiagonally(word, currentPosition, matrix)
+      putWordDiagonally(word, currentPosition, matrix, padStart)
       break;
     case "vertically":
-      putWordVertically(word, currentPosition, matrix)
+      putWordVertically(word, currentPosition, matrix, padStart)
       break;
     case "horizontally":
-      putWordHorizontally(word, currentPosition, matrix)
+      putWordHorizontally(word, currentPosition, matrix, padStart)
       break;
   }
 }
@@ -205,5 +287,7 @@ export {
   getLinesByCords,
   getRegexByLines,
   getWordsByRegexLines,
+  getIntersections,
+  checkIntersections,
   putWord
 }

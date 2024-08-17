@@ -1,4 +1,4 @@
-import { generateMatrix, getCordsByMatrix, hasSpaceInPuzzle, orientationType, putWord, scrambleCordsOfMatrix } from "./utils/puzzleUtils"
+import { checkIntersections, generateMatrix, getCordsByMatrix, getIntersections, getLinesByCords, getRegexByLines, getWordsByRegexLines, hasSpaceInPuzzle, Line, Match, orientationType, putWord, scrambleCordsOfMatrix } from "./utils/puzzleUtils"
 
 type recieveListWordsType = string[]
 type resultGenerateType = {
@@ -19,34 +19,47 @@ const getLengthAndUpperWord = (word: string): mapWord => ({
 
 const generate = (listWords: recieveListWordsType): resultGenerateType => {
   const listWordMapped = listWords.map(getLengthAndUpperWord)
+  const wordList = listWordMapped.map(value => value.upperWord)
+  const wordListCopy = wordList.slice()
   const maxLength = Math.max(...listWords.map(word => word.length))
   const dimension = (GapLetter + maxLength + GapLetter)
   const letterSoupPuzzle: string[][] = generateMatrix(dimension)
   const cordsPuzzle = scrambleCordsOfMatrix(getCordsByMatrix(letterSoupPuzzle))
 
-  for (const selectedWord of listWordMapped) {
-    if (!selectedWord)
-      throw 'No more words'
+  for (const [x, y] of cordsPuzzle) {
+    const linesByCords = getLinesByCords([x, y], letterSoupPuzzle)
+    const regexByLine = getRegexByLines(linesByCords)
+    const wordsByLines = getWordsByRegexLines(regexByLine, wordListCopy)
 
-    for (const [x, y] of cordsPuzzle) {
-      const orientationPosibility = hasSpaceInPuzzle(dimension, [x, y], selectedWord.lengthWord, letterSoupPuzzle)
-      const orientation: orientationType =
-        orientationPosibility.hasSpaceDiagonally ?
-          "diagonally" : orientationPosibility.hasSpaceVertically ?
-            "vertically" : orientationPosibility.hasSpaceHorizontally ? "horizontally" : false
-
+    const orientation: orientationType =
+      wordsByLines.matchRegexDiagonallyDownLine.length > 0 ?
+        "diagonally" : wordsByLines.matchRegexVertinallyLine.length > 0 ?
+          "vertically" : wordsByLines.matchRegexHorizontallyLine.length > 0 ? "horizontally" : false
 
 
-      if (orientation) {
-        putWord(selectedWord.upperWord, letterSoupPuzzle, [x, y], orientation)
-        break
+    if (orientation) {
+      const matchByOrientation = Match[orientation]
+      const lineByOrientation = linesByCords[Line[orientation]]
+      const selectedWord = wordsByLines[matchByOrientation][0]
+      const intersections = getIntersections(Array.from(selectedWord), lineByOrientation)
+      const intersection = checkIntersections(intersections,selectedWord, lineByOrientation)
+      
+      console.log([x, y], orientation, selectedWord, intersections, intersection, wordsByLines)
+      
+      if (intersection) {
+        putWord(selectedWord, letterSoupPuzzle, [x, y], orientation, (intersection.lineIndex - intersection.wordIndex))
+      } else {
+        putWord(selectedWord, letterSoupPuzzle, [x, y], orientation)
       }
+      wordListCopy.splice(wordListCopy.indexOf(selectedWord), 1)
+
+      console.table(letterSoupPuzzle)
     }
   }
 
   return {
     letterSoupPuzzle,
-    wordList: listWordMapped.map(value => value.upperWord)
+    wordList
   }
 }
 
