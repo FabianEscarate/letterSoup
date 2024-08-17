@@ -44,16 +44,12 @@ const generate = (listWords: recieveListWordsType): resultGenerateType => {
       const intersections = getIntersections(Array.from(selectedWord), lineByOrientation)
       const intersection = checkIntersections(intersections,selectedWord, lineByOrientation)
       
-      console.log([x, y], orientation, selectedWord, intersections, intersection, wordsByLines)
-      
       if (intersection) {
         putWord(selectedWord, letterSoupPuzzle, [x, y], orientation, (intersection.lineIndex - intersection.wordIndex))
       } else {
         putWord(selectedWord, letterSoupPuzzle, [x, y], orientation)
       }
       wordListCopy.splice(wordListCopy.indexOf(selectedWord), 1)
-
-      console.table(letterSoupPuzzle)
     }
   }
 
