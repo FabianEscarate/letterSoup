@@ -1,1 +1,2 @@
-export { generate } from './letterSoup'
+import './utils/string'
+export { WordSearch } from "./letterSoup"
