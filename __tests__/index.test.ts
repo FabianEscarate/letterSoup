@@ -1,38 +1,39 @@
-import * as letterSoup from "../src"
+import { WordSearch } from "../src"
 
 describe('letterSoup generator', () => {
 
   const wordsArray = [
-    "recrimación",
-    "descompuestos",
-    "containerizzato",
-    "curaciones",
-    "decorada",
-    "chimeneas",
-    "Firetraps",
-    "molinos",
-    "alfarero",
-    "encantador",
-    "tecnócrata",
-    "poliedros",
-    "adivinanzas",
-    "imparcialidad",
-    "fluir"
+    "tarjetas",
+    "Weaselling",
+    "Pinwales",
+    "populoso",
+    "participio",
+    "Cuddliest",
+    "Especias",
+    "teléfonos",
+    "epigráfico",
+    "hidrométrico",
+    "licitador",
+    "partición",
+    "miembros",
+    "nuestra",
+    "restituciones"
   ]
 
   test('should return a object when call generate function', () => {
     const {
-      letterSoupPuzzle,
-      wordList
-    } = letterSoup.generate(wordsArray)
+      getPuzzle,
+      getWords
+    } = new WordSearch(wordsArray)
 
-    // console.log(wordList)
-    console.table(wordList)
-    console.table(letterSoupPuzzle)
-    // letterSoupPuzzle.forEach((row) => console.table(row))
+    const listOfWord = getWords()
+    const puzzle = getPuzzle()
 
-    expect(letterSoupPuzzle).toBeDefined()
-    expect(wordList).toBeDefined()
+    console.table(listOfWord)
+    console.table(puzzle)
+
+    expect(puzzle).toBeDefined()
+    expect(listOfWord).toBeDefined()
 
   })
 })
