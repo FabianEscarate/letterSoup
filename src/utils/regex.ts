@@ -9,7 +9,7 @@ const isLastGroup = (index: number, lengthGroup: number) =>
   index === (lengthGroup - 1)
 const isBetweenGroup = (index: number, lengthGroup: number) =>
   0 < index && index < (lengthGroup - 1)
-const regexByListGroup = (groups: RegExpMatchArray | string []) =>
+const regexByListGroup = (groups: RegExpMatchArray | string[]) =>
   groups.reduce((regex, group, index, groups) => {
 
     if (isFirstGroup(index))
@@ -45,8 +45,16 @@ const generateRegexByGroupOfSpacesAndLetters = (groups: RegExpMatchArray) => {
       regexByListGroup(groups),
       ...chunkListCharactersByCriterial(groups).map(chunk => regexByListGroup(chunk))
     ),
-    'gm'    
+    'gm'
   )
+}
+
+const generateRegexByLine = (line: string) => {
+  const splitedLine = splitsGroupOfSpacesAndLetter(line)
+  if (!splitedLine)
+    throw 'Error for split line'
+
+  return generateRegexByGroupOfSpacesAndLetters(splitedLine)
 }
 
 export {
@@ -55,5 +63,6 @@ export {
   splitsGroupOfSpacesAndLetter,
   joinRegexStringWithPipe,
   chunkListCharactersByCriterial,
-  generateRegexByGroupOfSpacesAndLetters
+  generateRegexByGroupOfSpacesAndLetters,
+  generateRegexByLine
 }
