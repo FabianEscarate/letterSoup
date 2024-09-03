@@ -4,7 +4,7 @@
   "description": "generate letterSoup",
   "main": "src/index.ts",
   "scripts": {
-    "start": "ts-node -e \"require('./src/index.ts').main()\"",
+    "build": "tsc --project tsconfig.json",
     "test": "jest"
   },
   "keywords": [
@@ -22,5 +22,8 @@
     "ts-jest": "^29.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "npm": "^10.8.3"
   }
 }

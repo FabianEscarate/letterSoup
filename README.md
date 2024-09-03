@@ -2,15 +2,26 @@
 
 Algorithm for make letterSoups (sopa de letras)
 
+## Install
+
+```bash 
+  npm i lettersoup
+```
 
 ## Import/Examples
 
 ```Javascript
-import letterSoup from 'letterSoup'
+import { WordSearch } from 'letterSoup'
 
 const listWords = ['Doctor', 'Dog', 'Banana']
 
-const result = letterSoup.generate(listWords)
+const {
+      getPuzzle,
+      getWords
+    } = new WordSearch(wordsArray)
+
+const puzzle = getPuzzle()
+const words = getWords()
 ```
 
 
