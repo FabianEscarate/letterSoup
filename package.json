@@ -1,6 +1,6 @@
 {
   "name": "lettersoup",
-  "version": "1.0.0.1",
+  "version": "1.0.1",
   "description": "generate letterSoup",
   "main": "dist/index.ts",
   "scripts": {
