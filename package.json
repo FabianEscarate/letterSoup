@@ -2,7 +2,7 @@
   "name": "lettersoup",
   "version": "1.0.0",
   "description": "generate letterSoup",
-  "main": "src/index.ts",
+  "main": "dist/index.ts",
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "test": "jest"
