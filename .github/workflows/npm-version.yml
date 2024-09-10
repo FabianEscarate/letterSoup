@@ -5,19 +5,31 @@ on:
     branches:
     - CI
 
+env:
+  sourcePackageVersion: ${{github.head_ref}}
+  targetPackageVersion: ${{github.base_ref}}
+
 jobs:
   up_version:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: dkershner6/get-pull-request-action@v1
+      id: get_pr
       with:
-        node-version: 20
-    - run: npm ci
-    - name: Set up Git
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-    - name: show branch to merge
-      run: echo ${{github.head_ref}}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - run: echo ${{ fromJSON(steps.get_pr.outputs.pr).title }} 
+
+    # Make sure to use the fromJSON filter
+    # - uses: actions/setup-node@v4
+    #   with:
+    #     node-version: 20
+    # - run: npm ci
+    # - name: Set up Git
+    #   run: |
+    #     git config --global user.name "GitHub Actions"
+    #     git config --global user.email "actions@github.com"
+    # - name: show branch to merge
+    #   run: echo ${{github.head_ref}}
     # - run: npm version patch && git push
