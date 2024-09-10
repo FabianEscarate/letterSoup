@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Verify PR Title for make package version"
-pr_title="$env."
+pr_title="$pr_title"
 
 echo "Title of pr $pr_title"
 
