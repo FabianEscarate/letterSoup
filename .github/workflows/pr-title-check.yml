@@ -7,7 +7,7 @@ on:
 
 jobs:
   title-checker:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dkershner6/get-pull-request-action@v1
