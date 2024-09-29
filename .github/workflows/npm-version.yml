@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - CI
-    types:
-      - closed
+    # types:
+      # - closed
 
 env:
   sourcePackageVersion: ${{github.head_ref}}
@@ -13,7 +13,7 @@ env:
 
 jobs:
   title-checker:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       npmVersionFlag: ${{ steps.version_flag.outputs.npm_version_flag }}
@@ -30,7 +30,7 @@ jobs:
           pr_title: "${{ fromJSON(steps.get_pr.outputs.pr).title }}"
 
   up_version:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     needs: title-checker
     steps:
