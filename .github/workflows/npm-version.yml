@@ -46,9 +46,9 @@ jobs:
     - name: Generate Tag
       run: |
         npm version ${{ needs.title-checker.outputs.npmVersionFlag }}
-    - name: add new version Package.json
+    - name: commit new version Package.json
       run: |
-        git add package.json && git commit -m "up package version"          
+        git commit --allow-empty -m "up package version"          
     - name: Push Tag
       run: |
         git push origin ${{ env.targetPackageVersion }} --tags
