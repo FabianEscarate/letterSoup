@@ -47,6 +47,9 @@ jobs:
       # run: echo "version to make ${{ needs.title-checker.outputs.npmVersionFlag }}"
       run: |
         npm version ${{ needs.title-checker.outputs.npmVersionFlag }}
+    - name: add new version Package.json
+      run: |
+        git add package.json && git comit -m "up package version"          
     - name: Push Tag
       run: |
         git push origin --tags
