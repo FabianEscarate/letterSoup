@@ -3,7 +3,7 @@ name: Package version patch
 on:
   pull_request:
     branches:
-      - CI
+      - main
     types:
       - closed
 
