@@ -1,52 +1,80 @@
-import { Cord } from "./Entities/Cords"
-import Matrix from "./Entities/Matrix"
+import { Cordenate } from "./Entities/Cordenates"
+import CrossRow from "./Entities/CrossRow"
+import PlayBoard from "./Entities/PlayBoard"
 import Words from "./Entities/Word"
 import { interectionsType, matchRegexLines, wordListByLineType } from "./Types"
 import { generateRegexByLine } from "./utils/regex"
 
-export class WordSearch {
+export class LetterSoup {
   private listOfWord: string[]
-  private puzzle: Matrix
+  private playBoard: PlayBoard
   private words: Words
 
   constructor(listOfWords: string[]) {
     this.listOfWord = listOfWords.map(word => word.toUpperCase())
     const maxWordLegth = Math.max(...listOfWords.map(word => word.length))
-    this.puzzle = new Matrix(maxWordLegth)
-    this.words = new Words(this.puzzle, this.listOfWord)
+    this.playBoard = new PlayBoard(maxWordLegth)
+    this.words = new Words(this.playBoard, this.listOfWord)
 
     this.generate()
   }
 
   private generate() {
-    const cordsPuzzle = this.puzzle.cords.scrambleCordsOfMatrix()
+    const scrambleCordenates = this.playBoard.cordenates.scrambleCordsOfMatrix()
 
-    for (const cord of cordsPuzzle) {
-      const canPutWord = this.canPutWordInCurrentPosition(cord)
+    // first try
+    for (const currentCordenate of scrambleCordenates) {
+      this.tryPutWords(currentCordenate)
+    }
 
-      if (canPutWord) {
-        const {
-          orientation,
-          line,
-          wordSelected
-        } = this.selectAnyMatch(canPutWord)
+    // if has no more words in the list
+    // if (!this.words.hasMoreWordsToPut()) return
 
-        const intersections = this.getIntersections(wordSelected, line)
-        const intersection = this.checkIntersections(intersections, wordSelected, line)
+    // second try (check empty espaces)
+    // const cordsWithEmptyValues = this.playBoard.cordenates.getEmptySlots()
 
-        if (intersection) {
-          this.words.putWord(wordSelected, orientation, (intersection.lineIndex - intersection.wordIndex))
-        } else {
-          this.words.putWord(wordSelected, orientation)
-        }
-        this.words.removeWord(wordSelected)
+    // for (const cordEmpty of cordsWithEmptyValues) {
+    //   // console.log(cordEmpty)
+    //   this.tryPutWords(cordEmpty)
+    // }
+
+
+    // let numberOfTry = 1
+    // while(numberOfTry <= NUMBER_OF_TRY){
+    //   numberOfTry++
+    // }
+
+
+
+    console.table(this.words.listWords())
+  }
+
+  private tryPutWords = (cord: Cordenate) => {
+    const crossRows = new CrossRow(this.playBoard, cord)
+    const canPutWord = this.canPutWordByCrossRow(crossRows)
+
+    if (canPutWord) {
+      const {
+        orientation,
+        wordSelected
+      } = this.selectAnyMatch(canPutWord)
+
+      const lineCordenates = this.playBoard.cordenates.getCordsByOrientationAndCordenate(orientation, cord)
+      const orientedRow = lineCordenates.map(cord => this.playBoard.getSlot(cord.cordX, cord.cordY)).join('')
+      const intersections = this.getIntersections(wordSelected, orientedRow)
+      const intersection = this.checkIntersections(intersections, wordSelected, orientedRow)
+
+      if (intersection) {
+        this.words.putWordByRowCordenates(wordSelected, lineCordenates, (intersection.lineIndex - intersection.wordIndex))
+      } else {
+        this.words.putWordByRowCordenates(wordSelected, lineCordenates)
       }
+      this.words.removeWord(wordSelected)
     }
   }
 
-  private canPutWordInCurrentPosition = (cord: Cord) => {
-    this.puzzle.cords.setCordPosition(cord)
-    const wordsForEveryOrientation = this.words.getWordsEveryOrientation()
+  private canPutWordByCrossRow = (crossRows: CrossRow) => {
+    const wordsForEveryOrientation = this.words.getPossibleWordsByLines(crossRows)
     const {
       matchRegexDiagonallyDownLine,
       matchRegexDiagonallyUpLine,
@@ -78,7 +106,6 @@ export class WordSearch {
 
     return {
       orientation: matchRegexLines[randomSelection],
-      line: this.puzzle.lines.getLineByOrientation(matchRegexLines[randomSelection]),
       wordSelected: this.pickRandomElement(lineMatches[randomSelection]),
     }
   }
@@ -123,7 +150,7 @@ export class WordSearch {
     }
   }
 
-  getPuzzle = () => this.puzzle.getMatrix()
+  getPuzzle = () => this.playBoard.getPlayBoard()
 
   getWords = () => this.listOfWord
 }

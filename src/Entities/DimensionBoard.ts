@@ -6,7 +6,7 @@ export type DimensionType = {
   height: number
 }
 
-export default class DimensionPuzzle {
+export default class DimensionBoard {
   private width: number
   private height: number
 
