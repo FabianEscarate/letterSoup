@@ -1,6 +1,5 @@
 import { orientationEnum, orientationType } from "../Types"
 import { DimensionType } from "./DimensionBoard"
-import CrossRow from "./CrossRow"
 import PlayBoard from "./PlayBoard"
 
 
