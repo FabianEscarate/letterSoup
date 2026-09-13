@@ -11,14 +11,14 @@ Algorithm for make letterSoups (sopa de letras)
 ## Import/Examples
 
 ```javascript
-import { WordSearch } from 'lettersoup';
+import { LetterSoup } from 'lettersoup';
 
 const listWords = ['Doctor', 'Dog', 'Banana', 'Apple', 'Orange'];
 
-const wordSearch = new WordSearch(listWords);
+const letterSoup = new LetterSoup(listWords);
 
-const puzzle = wordSearch.getPuzzle();
-const words = wordSearch.getWords();
+const puzzle = letterSoup.getPuzzle();
+const words = letterSoup.getWords();
 
 console.log('Puzzle:', puzzle);
 console.log('Words:', words);
@@ -27,9 +27,9 @@ console.log('Words:', words);
 
 ## API Reference
 
-### `new WordSearch(words: string[])`
+### `new LetterSoup(words: string[])`
 
-Creates a new instance of WordSearch.
+Creates a new instance of LetterSoup.
 
 -   `words` (string[]): A list of words to be included in the letter soup.
 
@@ -80,13 +80,6 @@ Install dependencies
 ```bash
   npm install
 ```
-
-Start the server
-
-```bash
-  npm start
-```
-
 
 ## Running Tests
 
