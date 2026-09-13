@@ -1,5 +1,6 @@
 import { orientationEnum, orientationType, regexValueByLineType } from "../Types";
 import { generateRegexByLine } from "../utils/regex";
+import '../utils/string'
 import { Cordenate } from "./Cordenates";
 import PlayBoard from "./PlayBoard";
 

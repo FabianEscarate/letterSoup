@@ -31,5 +31,17 @@ describe('CrossRow Suite', () => {
       expect(generateRegexByLineSpyOn).toHaveBeenCalled()
 
     })
+
+    test('Should get line by orientation', () => {
+      const horizontallyLine = crossRowInstance.getLineByOrientation('horizontally')
+      const verticallyLine = crossRowInstance.getLineByOrientation('vertically')
+      const diagonallyLine = crossRowInstance.getLineByOrientation('diagonally')
+      const antidiagonallyLine = crossRowInstance.getLineByOrientation('antidiagonally')
+
+      expect(horizontallyLine).toBeDefined()
+      expect(verticallyLine).toBeDefined()
+      expect(diagonallyLine).toBeDefined()
+      expect(antidiagonallyLine).toBeDefined()
+    })
   })
 })
