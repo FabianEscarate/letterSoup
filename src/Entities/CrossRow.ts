@@ -33,30 +33,21 @@ export default class CrossRow {
     }
 
     const regexForLines = Object.keys(lines).reduce((result, key) => {
-      const newObj = {} as any
-      newObj[`regex${key.capitalize()}`] = generateRegexByLine(lines[key as keyof typeof lines])
-      return {
-        ...result,
-        ...newObj
-      }
-    }, {} as regexValueByLineType)
+      result[`regex${key.capitalize()}`] = generateRegexByLine(lines[key as keyof typeof lines])
+      return result
+    }, {} as Record<string, RegExp>) as regexValueByLineType
 
     return regexForLines
   }
 
   getLineByOrientation = (orientation: orientationType) => {
-    let selectedOrientation:Cordenate[]
-    switch (orientation) {
-      case "horizontally":
-        selectedOrientation =  this.horizontallyRowCordenates
-      case "vertically":
-        selectedOrientation =  this.verticallyRowCordenates
-      case "diagonally":
-        selectedOrientation =  this.diagonallyDownRowCordenates
-      case "antidiagonally":
-        selectedOrientation =  this.diagonallyUpRowCordenates
+    const rowCordenatesByOrientation = {
+      horizontally: this.horizontallyRowCordenates,
+      vertically: this.verticallyRowCordenates,
+      diagonally: this.diagonallyDownRowCordenates,
+      antidiagonally: this.diagonallyUpRowCordenates
     }
 
-    return selectedOrientation.map(cord => this.board.getSlot(cord.cordX, cord.cordY)).join('')
+    return rowCordenatesByOrientation[orientation].map(cord => this.board.getSlot(cord.cordX, cord.cordY)).join('')
   }
 }

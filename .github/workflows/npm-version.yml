@@ -18,7 +18,7 @@ jobs:
     outputs:
       npmVersionFlag: ${{ steps.version_flag.outputs.npm_version_flag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dkershner6/get-pull-request-action@v1
         id: get_pr
         with:
@@ -34,10 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: title-checker
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ssh-key: ${{ secrets.SSH_KEY }}
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v5
       with:
         node-version: 24
     - run: npm ci

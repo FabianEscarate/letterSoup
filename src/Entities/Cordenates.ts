@@ -1,4 +1,4 @@
-import { orientationEnum, orientationType } from "../Types"
+import { orientationType } from "../Types"
 import { DimensionType } from "./DimensionBoard"
 import PlayBoard from "./PlayBoard"
 

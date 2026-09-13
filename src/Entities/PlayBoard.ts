@@ -1,6 +1,5 @@
 import { puzzleType } from "../Types";
-import Cordenates, { Cordenate } from "./Cordenates";
-import CrossRow from "./CrossRow";
+import Cordenates from "./Cordenates";
 import DimensionBoard from "./DimensionBoard";
 
 const BLANK_SPACE = ' '
@@ -21,10 +20,12 @@ export default class PlayBoard extends DimensionBoard{
       height
     } = this.getDimension()
 
-    const board: puzzleType = Array(...Array(width * height)).reduce((resultValue, currentValue, index, array) => {
-      resultValue = [...resultValue, array.splice(0, width).map(index => BLANK_SPACE)]
-      return resultValue
-    }, [])
+    const cells = Array(width * height).fill(BLANK_SPACE)
+    const board: puzzleType = []
+
+    for (let row = 0; row < height; row++) {
+      board.push(cells.splice(0, width))
+    }
 
     return board
   }
