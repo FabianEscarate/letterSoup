@@ -1,9 +1,7 @@
-import { orientationType, wordListByLineType } from "../Types"
+import { wordListByLineType } from "../Types"
 import { Cordenate } from "./Cordenates"
 import CrossRow from "./CrossRow"
 import PlayBoard from "./PlayBoard"
-
-const LETTERS = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'
 
 export default class Words {
   private board: PlayBoard
@@ -44,13 +42,9 @@ export default class Words {
     const linesWithSearhRegex = lines.getLinesWithRegex()
 
     const wordsByLine = Object.keys(linesWithSearhRegex).reduce((result, key) => {
-      const newObj = {} as any
-      newObj[`match${key.capitalize()}`] = this.listOfWords.filter(word => word.match(linesWithSearhRegex[key as keyof typeof linesWithSearhRegex]) as string[])
-      return {
-        ...result,
-        ...newObj
-      }
-    }, {} as wordListByLineType)
+      result[`match${key.capitalize()}`] = this.listOfWords.filter(word => word.match(linesWithSearhRegex[key as keyof typeof linesWithSearhRegex]) as string[])
+      return result
+    }, {} as Record<string, string[]>) as wordListByLineType
 
     return wordsByLine
   }

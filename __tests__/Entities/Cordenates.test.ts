@@ -29,8 +29,6 @@ describe('Cordenates Suite', () => {
     })
 
     test('Should get empty slots', () => {
-      const scrambleCords = cordenates.scrambleCordsOfMatrix()
-
       board.setSlot(0, 0, 'L')
 
       const emptySlots = cordenates.getEmptySlots()

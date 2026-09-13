@@ -22,11 +22,11 @@ describe('CrossRow Suite', () => {
     })
 
     test('Should get lines with Regex', () => {
-      const generateRegexByLineSpyOn = jest.spyOn(regex, 'generateRegexByLine').mockImplementation((line: string) => {
+      const generateRegexByLineSpyOn = jest.spyOn(regex, 'generateRegexByLine').mockImplementation(() => {
         return new RegExp('mockResponse')
       })
 
-      const lineWithRegex = crossRowInstance.getLinesWithRegex()
+      crossRowInstance.getLinesWithRegex()
 
       expect(generateRegexByLineSpyOn).toHaveBeenCalled()
 

@@ -33,13 +33,9 @@ export default class CrossRow {
     }
 
     const regexForLines = Object.keys(lines).reduce((result, key) => {
-      const newObj = {} as any
-      newObj[`regex${key.capitalize()}`] = generateRegexByLine(lines[key as keyof typeof lines])
-      return {
-        ...result,
-        ...newObj
-      }
-    }, {} as regexValueByLineType)
+      result[`regex${key.capitalize()}`] = generateRegexByLine(lines[key as keyof typeof lines])
+      return result
+    }, {} as Record<string, RegExp>) as regexValueByLineType
 
     return regexForLines
   }
