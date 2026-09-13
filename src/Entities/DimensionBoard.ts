@@ -6,7 +6,7 @@ export type DimensionType = {
   height: number
 }
 
-export default class DimensionPuzzle {
+export default class DimensionBoard {
   private width: number
   private height: number
 
@@ -19,6 +19,12 @@ export default class DimensionPuzzle {
     return {
       width: this.width,
       height: this.height
+        }
+      }
+    
+      incrementDimensions() {
+        this.width++
+        this.height++
+      }
     }
-  }
-}
+    

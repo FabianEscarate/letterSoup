@@ -1,2 +1,2 @@
 import './utils/string'
-export { WordSearch } from "./letterSoup"
+export { LetterSoup } from "./letterSoup"

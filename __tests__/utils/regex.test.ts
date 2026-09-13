@@ -4,7 +4,8 @@ import {
   isWhiteSpace,
   splitsGroupOfSpacesAndLetter,
   chunkListCharactersByCriterial,
-  joinRegexStringWithPipe
+  joinRegexStringWithPipe,
+  generateRegexByLine
 } from "../../src/utils/regex";
 
 
@@ -77,4 +78,14 @@ describe('Regex Suite', () => {
     expect(regexExpresionResult.toString()).toBe(regexExpected)
   })
 
+  test('should throw error when line is empty', () => {
+    const line = ''
+    const expectedError = 'Error for split line'
+
+    try {
+      generateRegexByLine(line)
+    } catch (error) {
+      expect(error).toBe(expectedError)
+    }
+  })
 })

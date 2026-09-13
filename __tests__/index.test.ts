@@ -1,4 +1,4 @@
-import { WordSearch } from "../src"
+import { LetterSoup } from "../src"
 
 describe('letterSoup generator', () => {
 
@@ -23,14 +23,16 @@ describe('letterSoup generator', () => {
   test('should return a object when call generate function', () => {
     const {
       getPuzzle,
-      getWords
-    } = new WordSearch(wordsArray)
+      getWords,
+      getRemainingWords
+    } = new LetterSoup(wordsArray)
 
     const listOfWord = getWords()
     const puzzle = getPuzzle()
+    const remainingWords = getRemainingWords()
 
     expect(puzzle).toBeDefined()
     expect(listOfWord).toBeDefined()
-
+    expect(remainingWords).toEqual([])
   })
 })
