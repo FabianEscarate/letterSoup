@@ -5,6 +5,8 @@ import Words from "./Entities/Word"
 import { interectionsType, matchRegexLines, wordListByLineType } from "./Types"
 import { generateRegexByLine } from "./utils/regex"
 
+const MAX_EXPANSIONS = 3
+
 export class LetterSoup {
   private listOfWord: string[]
   private playBoard: PlayBoard
@@ -20,57 +22,56 @@ export class LetterSoup {
   }
 
   private generate() {
-    const scrambleCordenates = this.playBoard.cordenates.scrambleCordsOfMatrix()
+    let expansions = 0
+    let isExpandable = true
 
-    // first try
-    for (const currentCordenate of scrambleCordenates) {
-      this.tryPutWords(currentCordenate)
+    while (this.words.hasMoreWordsToPut() && isExpandable) {
+      let hasProgress = true
+
+      while (hasProgress && this.words.hasMoreWordsToPut()) {
+        hasProgress = false
+        const scrambleCordenates = this.playBoard.cordenates.scrambleCordsOfMatrix()
+
+        for (const currentCordenate of scrambleCordenates) {
+          if (this.tryPutWords(currentCordenate))
+            hasProgress = true
+        }
+      }
+
+      if (!this.words.hasMoreWordsToPut()) return
+
+      if (expansions >= MAX_EXPANSIONS) {
+        isExpandable = false
+      } else {
+        this.playBoard.expandBoard()
+        expansions++
+      }
     }
-
-    // if has no more words in the list
-    // if (!this.words.hasMoreWordsToPut()) return
-
-    // second try (check empty espaces)
-    // const cordsWithEmptyValues = this.playBoard.cordenates.getEmptySlots()
-
-    // for (const cordEmpty of cordsWithEmptyValues) {
-    //   // console.log(cordEmpty)
-    //   this.tryPutWords(cordEmpty)
-    // }
-
-
-    // let numberOfTry = 1
-    // while(numberOfTry <= NUMBER_OF_TRY){
-    //   numberOfTry++
-    // }
-
-
-
-    console.table(this.words.listWords())
   }
 
-  private tryPutWords = (cord: Cordenate) => {
+  private tryPutWords = (cord: Cordenate): boolean => {
     const crossRows = new CrossRow(this.playBoard, cord)
     const canPutWord = this.canPutWordByCrossRow(crossRows)
 
-    if (canPutWord) {
-      const {
-        orientation,
-        wordSelected
-      } = this.selectAnyMatch(canPutWord)
+    if (!canPutWord) return false
 
-      const lineCordenates = this.playBoard.cordenates.getCordsByOrientationAndCordenate(orientation, cord)
-      const orientedRow = lineCordenates.map(cord => this.playBoard.getSlot(cord.cordX, cord.cordY)).join('')
-      const intersections = this.getIntersections(wordSelected, orientedRow)
-      const intersection = this.checkIntersections(intersections, wordSelected, orientedRow)
+    const {
+      orientation,
+      wordSelected
+    } = this.selectAnyMatch(canPutWord)
 
-      if (intersection) {
-        this.words.putWordByRowCordenates(wordSelected, lineCordenates, (intersection.lineIndex - intersection.wordIndex))
-      } else {
-        this.words.putWordByRowCordenates(wordSelected, lineCordenates)
-      }
-      this.words.removeWord(wordSelected)
+    const lineCordenates = this.playBoard.cordenates.getCordsByOrientationAndCordenate(orientation, cord)
+    const orientedRow = lineCordenates.map(cord => this.playBoard.getSlot(cord.cordX, cord.cordY)).join('')
+    const intersections = this.getIntersections(wordSelected, orientedRow)
+    const intersection = this.checkIntersections(intersections, wordSelected, orientedRow)
+
+    if (intersection) {
+      this.words.putWordByRowCordenates(wordSelected, lineCordenates, (intersection.lineIndex - intersection.wordIndex))
+    } else {
+      this.words.putWordByRowCordenates(wordSelected, lineCordenates)
     }
+    this.words.removeWord(wordSelected)
+    return true
   }
 
   private canPutWordByCrossRow = (crossRows: CrossRow) => {
@@ -153,5 +154,7 @@ export class LetterSoup {
   getPuzzle = () => this.playBoard.getPlayBoard()
 
   getWords = () => this.listOfWord
+
+  getRemainingWords = () => this.words.getRemainingWords()
 }
 

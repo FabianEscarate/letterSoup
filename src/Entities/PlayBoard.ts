@@ -34,4 +34,19 @@ export default class PlayBoard extends DimensionBoard{
   getSlot = (cordX: number, cordY: number) => this.board[cordX][cordY]
 
   getPlayBoard = () => this.board
+
+  expandBoard = () => {
+    this.incrementDimensions()
+    const { width, height } = this.getDimension()
+    const newBoard = Array.from({ length: height }, () => Array.from({ length: width }, () => BLANK_SPACE));
+
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        newBoard[i][j] = this.board[i][j];
+      }
+    }
+    
+    this.board = newBoard;
+    this.cordenates = new Cordenates(this);
+  }
 }

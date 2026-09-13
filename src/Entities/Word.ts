@@ -18,6 +18,10 @@ export default class Words {
     return this.listOfWords
   }
 
+  getRemainingWords = () => {
+    return this.listOfWords.slice()
+  }
+
   hasMoreWordsToPut = () => {
     return this.listOfWords.length > 0
   }

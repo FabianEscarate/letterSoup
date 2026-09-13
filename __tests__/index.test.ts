@@ -23,17 +23,16 @@ describe('letterSoup generator', () => {
   test('should return a object when call generate function', () => {
     const {
       getPuzzle,
-      getWords
+      getWords,
+      getRemainingWords
     } = new LetterSoup(wordsArray)
 
     const listOfWord = getWords()
     const puzzle = getPuzzle()
-
-    // console.table(listOfWord)
-    console.table(puzzle)
+    const remainingWords = getRemainingWords()
 
     expect(puzzle).toBeDefined()
     expect(listOfWord).toBeDefined()
-
+    expect(remainingWords).toEqual([])
   })
 })

@@ -19,6 +19,12 @@ export default class DimensionBoard {
     return {
       width: this.width,
       height: this.height
+        }
+      }
+    
+      incrementDimensions() {
+        this.width++
+        this.height++
+      }
     }
-  }
-}
+    
